@@ -37,6 +37,8 @@
 ~rose.addEffect(\ampModulator, \ampMod);
 )
 
+~rose.freeEffect(\reslpf, \rlpf);
+
 // note: to see available effects: ~peer.effectsList;
 ~river.effectsList;
 ~rose.effectsList;
@@ -49,15 +51,15 @@
 
 Pdefn(\sinTarget, \rose, inf);
 Pdefn(\sinInstrument, \sin, inf);
-Pdefn(\sinOutBus, \reverb, inf);
+Pdefn(\sinOutBus, \reslpf, inf);
 Pdefn(\sinFreq, Pshuf(([48,50,52,53,55,57,58]).midicps, inf));
-Pdefn(\sinAmp, 0.25, inf);
+Pdefn(\sinAmp, 0.5, inf);
 Pdefn(\sinAtt, 0.01, inf);
 Pdefn(\sinWait, Pseq([0.125], inf));
-Pdefn(\sinDuration, Pseq([0.5], inf));
+Pdefn(\sinDuration, Pseq([0.25], inf));
 Pdefn(\sinPan, Pseq([0], inf));
-Pdefn(\sinMod1, 0.0001, inf);
-Pdefn(\sinMod2, 0.0001, inf);
+Pdefn(\sinMod1, 0, inf);
+Pdefn(\sinMod2, 0, inf);
 )
 
 // 8. this is just to make sure the global tempo is set to something reasonable.
@@ -70,18 +72,18 @@ Pdefn(\sinMod2, 0.0001, inf);
 MIDIIn.connectAll;
 
 a = MIDIFunc.cc({arg ...args;
-	~rose.setEffect(\ringModulator, \mix, args[0]/127);
+	~rose.setEffect(\reslpf, \freq, args[0].linlin(0,127,100,4000));
 }, 16); // match cc 16
 
 b = MIDIFunc.cc({arg ...args;
-	~rose.setEffect(\ringModulator, \room, args[0]/127);
+	~rose.setEffect(\reslpf, \rq, args[0].linlin(0,127,0,0.0125));
 }, 17); // match cc 16
 
 c = MIDIFunc.cc({arg ...args;
-	~rose.setEffect(\ringModulator, \damp, args[0]/127);
+	~rose.setEffect(\reslpf, \mix, args[0]/127);
 }, 18); // match cc 16
 
-
+~sin.stop;
 // this is a slightly more complex pattern:
 (
 Pdefn(\sinFreq,

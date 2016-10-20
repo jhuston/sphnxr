@@ -10,6 +10,24 @@
 //          ~addrBook.send(\river, "/effectSet", \distortion, \postGain, 0.12);
 
 
+// stacking effects?
+
+// synths to set up:
+//
+// polysynth
+// drum synth
+//
+// filters:
+// bpf
+// hpf
+// formant
+// vocoder
+
+
+// midi to control effects
+// midi to control pdefns
+// encapsulating scales?
+
 
 // lookup a named effect
 SynthDescLib.global.at(~addrBook.me.effectBank.dict[\reverb][1].defName);
@@ -95,12 +113,32 @@ a= ~effectLookupDict.value(\reverb);
 a.postln;
 
 
-synths to set up:
 
-	// synthdefs
-	//granular
-	//fm
-	//sinsynth
-	//polysynth
-	//vocoder
 
+
+
+{ Formlet.ar(Impulse.ar(20, SinOsc.ar(SinOsc.ar(0.25, 0, 2), 0, 2pi)), MouseY.kr(700,2000,1), 0.005, MouseX.kr(0.01,0.2,1)) }.play;
+
+(
+x = {
+    MoogFF.ar(
+        Pulse.ar([40,121], [0.3,0.7]),
+        SinOsc.kr(LFNoise0.kr(0.42).range(0.001, 2.2)).range(30, 4200),
+        0.83 * 4)}.play(s);
+)
+x.free;
+
+
+SynthDef(\hello, {arg freq = 1000;
+Out.ar(0, SinOsc.ar(Lag.kr(freq,3),mul: 0.8));
+}).send(s);
+
+s.sendMsg(\s_new, \hello, 1000, 0, 0);
+s.sendMsg(\n_set, 1000, \freq, 500);
+s.sendMsg(\n_set, 1000, \freq, 200);
+s.sendMsg(\n_set, 1000, \freq, 600);
+s.sendMsg(\n_set, 1000, \freq, 400);
+s.sendMsg(\n_set, 1000, \freq, 1000);
+s.sendMsg(\n_free, 1000);
+
+s.boot;
