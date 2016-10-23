@@ -17,7 +17,8 @@ EffectList {
 	names { ^dict.keys }
 
 	effectIndex {|key|
-		this.dict.atFail(key.asSymbol, {"effect not found".postln; ^nil});
+		key.postln;
+		this.dict.atFail(key.asSymbol, {"Effect List: Effect not found".postln; ^nil});
 	 	^this.dict.at(key.asSymbol);
 	}
 }

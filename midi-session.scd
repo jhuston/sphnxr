@@ -50,16 +50,16 @@
 // 7.  Now set the individual pdefns for one synth
 
 Pdefn(\sinTarget, \rose, inf);
-Pdefn(\sinInstrument, \sin, inf);
+Pdefn(\sinInstrument, \pulse, inf);
 Pdefn(\sinOutBus, \reslpf, inf);
 Pdefn(\sinFreq, Pshuf(([48,50,52,53,55,57,58]).midicps, inf));
 Pdefn(\sinAmp, 0.5, inf);
 Pdefn(\sinAtt, 0.01, inf);
-Pdefn(\sinWait, Pseq([0.125], inf));
+Pdefn(\sinWait, Pseq([0.25], inf));
 Pdefn(\sinDuration, Pseq([0.25], inf));
 Pdefn(\sinPan, Pseq([0], inf));
-Pdefn(\sinMod1, 0, inf);
-Pdefn(\sinMod2, 0, inf);
+Pdefn(\sinMod1, 0.5, inf);
+Pdefn(\sinMod2, 0.75, inf);
 )
 
 // 8. this is just to make sure the global tempo is set to something reasonable.
@@ -69,14 +69,19 @@ Pdefn(\sinMod2, 0, inf);
 // 9.  Start the synth
 ~sin.play;
 
+
 MIDIIn.connectAll;
+a.free;
+b.free;
+c.free;
 
 a = MIDIFunc.cc({arg ...args;
-	~rose.setEffect(\reslpf, \freq, args[0].linlin(0,127,100,4000));
+	var frq = args[0].linlin(0,127,30,80).round;
+	~rose.setEffect(\reslpf, \freq, frq.midicps);
 }, 16); // match cc 16
 
 b = MIDIFunc.cc({arg ...args;
-	~rose.setEffect(\reslpf, \rq, args[0].linlin(0,127,0,0.0125));
+	~rose.setEffect(\reslpf, \rq, args[0].linlin(0,127,0.01,0.125));
 }, 17); // match cc 16
 
 c = MIDIFunc.cc({arg ...args;
@@ -100,7 +105,7 @@ Pdefn(\sinFreq,
 
 (
 // 10.  Now set the individual pdefns for a second synth
-Pdefn(\ixiTarget, \rose, inf);
+Pdefn(\ixiTarget, \river, inf);
 Pdefn(\ixiInstrument, \ixibass, inf);
 Pdefn(\ixiOutBus, \masterOut, inf);
 Pdefn(\ixiFreq, Pshuf(([48,50,52,53,55,57,58]).midicps, inf));
@@ -190,7 +195,7 @@ Pdefn(\sinMod2, Pseq([0], inf));
 
 (
 // 24.  Now set the individual pdefns for the granular synth
-Pdefn(\granTarget, \rose, inf);
+Pdefn(\granTarget, \river, inf);
 Pdefn(\granInstrument, \gran, inf);
 Pdefn(\granOutBus, \reverb, inf);
 Pdefn(\granEnvBuf, -1, inf);

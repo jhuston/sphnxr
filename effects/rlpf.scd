@@ -5,6 +5,6 @@ SynthDef(\rlpf, {|
 	rq = 1,
 	mix = 0.5|
 	var dry = In.ar(inBus, 2);
-	var wet = RLPF.ar(dry, freq, rq);
+	var wet = RLPF.ar(dry, Lag.kr(freq, Line.kr(0, 1, 15)), rq);
 	Out.ar(outBus, ((wet*mix) + (dry * (1 - mix))) );
 }).add;
