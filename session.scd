@@ -41,6 +41,26 @@
 ~river.effectsList;
 ~rose.effectsList;
 
+
+
+// set up midi? easy:
+
+// MIDIIn.connectAll;
+//
+// a = MIDIFunc.cc({arg ...args;
+// 	var frq = args[0].linlin(0,127,30,80).round;
+// 	~rose.setEffect(\reslpf, \freq, frq.midicps);
+// }, 16); // match cc 16
+//
+// b = MIDIFunc.cc({arg ...args;
+// 	~rose.setEffect(\reslpf, \rq, args[0].linlin(0,127,0.01,0.125));
+// }, 17); // match cc 17
+//
+// c = MIDIFunc.cc({arg ...args;
+// 	~rose.setEffect(\reslpf, \mix, args[0]/127);
+// }, 18); // match cc 18
+
+
 // note: if for some reason the effects lists arent updating, have the machine that isn't working run this:
 ~addrBook.broadcastEffectList;
 
@@ -67,21 +87,6 @@ Pdefn(\sinMod2, 0.0001, inf);
 // 9.  Start the synth
 ~sin.play;
 
-MIDIIn.connectAll;
-
-a = MIDIFunc.cc({arg ...args;
-	~rose.setEffect(\ringModulator, \mix, args[0]/127);
-}, 16); // match cc 16
-
-b = MIDIFunc.cc({arg ...args;
-	~rose.setEffect(\ringModulator, \room, args[0]/127);
-}, 17); // match cc 16
-
-c = MIDIFunc.cc({arg ...args;
-	~rose.setEffect(\ringModulator, \damp, args[0]/127);
-}, 18); // match cc 16
-
-
 // this is a slightly more complex pattern:
 (
 Pdefn(\sinFreq,
@@ -92,7 +97,40 @@ Pdefn(\sinFreq,
 	inf);
 )
 
+(
+Pdefn(\sinWait,
+	Pshuf([
+		Pshuf([0.25, 0.125, 0.125], 4),
+		Prand([0.125, 0.125, 0.125], 4),
+		Pshuf([0.5, 0.25, 0.125], 1),
+		Pshuf([0.25, 0.25, 0.125], 1)
+	], inf),
+	inf);
+)
 
+
+Pdefn(\sinOutBus, \ringModulator, inf);
+~rose.setEffect(\ringModulator, \freq, 1.5);
+~rose.setEffect(\ringModulator, \freq, 250);
+~rose.setEffect(\ringModulator, \freq, 350);
+~rose.setEffect(\ringModulator, \freq, 500);
+
+Pdefn(\sinOutBus, \ampModulator, inf);
+~rose.setEffect(\ampModulator, \freq, 1.5);
+~rose.setEffect(\ampModulator, \freq, 250);
+~rose.setEffect(\ampModulator, \freq, 350);
+
+
+Pdefn(\sinOutBus, \reslpf, inf);
+
+~rose.setEffect(\reslpf, \freq, 4000);
+~rose.setEffect(\reslpf, \freq, 400);
+~rose.setEffect(\reslpf, \rq, 0.0125);
+~rose.setEffect(\reslpf, \mix, 0.15);
+~rose.setEffect(\reslpf, \mix, 0.75);
+~rose.setEffect(\reslpf, \mix, 0.99);
+
+~rose.setEffect(\reslpf, \rq, 0.25);
 
 
 
@@ -266,3 +304,41 @@ Pdefn(\pulseInt, 0.5, inf);
 
 ~pulse.stop;
 ~pulse.step;
+
+
+// Setup FM Synth
+
+(
+Pdefn(\fmTarget, \rose, inf);
+Pdefn(\fmInstrument, \fm, inf);
+Pdefn(\fmOutBus, \ringModulator, inf);
+Pdefn(\fmFreq, Prand(([48,50,52,53,55,57,58]).midicps, inf));
+Pdefn(\fmCar, Pseq([1], inf));
+Pdefn(\fmMod, Pseq([2.4, 2.401, 4, ], inf));
+Pdefn(\fmIndex, Pseq([3, 4, 4.5], inf));
+Pdefn(\fmAmp, 0.125, inf);
+Pdefn(\fmAtt, 0.01, inf);
+Pdefn(\fmWait, Prand([5,2,9,3,2,1], inf));
+Pdefn(\fmDuration, Pseq([15], inf));
+Pdefn(\fmPan, Pseq([-1,1], inf));
+Pdefn(\fmMod1, 0.5, inf);
+Pdefn(\fmMod2, 0.5, inf);
+)
+
+~fm.play;
+
+Pdefn(\fmOutBus, Prand(['ringModulator','ampModulator' ], inf));
+
+~rose.setEffect(\ringModulator, \freq, 1.5);
+~rose.setEffect(\ringModulator, \freq, 15);
+~rose.setEffect(\ringModulator, \freq, 250);
+~rose.setEffect(\ringModulator, \freq, 350);
+~rose.setEffect(\ringModulator, \freq, 1000);
+
+
+~rose.setEffect(\ampModulator, \freq, 10);
+~rose.setEffect(\ampModulator, \freq, 250);
+~rose.setEffect(\ampModulator, \freq, 350);
+~rose.setEffect(\ampModulator, \freq, 1000);
+
+~fm.stop;
