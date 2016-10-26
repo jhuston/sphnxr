@@ -6,7 +6,7 @@
 
 SerialPort.listDevices;
 s.boot;
-Ndef(\arduino, {|data= #[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]| Splay.ar(SinOsc.ar(data.lag(0.02)+500, 0, 0.4))}).play;
+Ndef(\arduino, {|data= #[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]| Splay.ar(SinOsc.ar(data.lag(0.2)+500, 0, 0.4))}).play;
 
 (
 var port= SerialPort("/dev/tty.usbmodem1421", 115200, crtscts: true);
