@@ -5,18 +5,17 @@
 //         Audio hardware, RAM allocation, etc.
 
 // 2.  Run the initialization file,
-("~/git/sphnxr/init.scd").loadPaths;
+"/init.scd".loadRelative;
+
 //         which should connect to the network and
 //         instantiate shared synths
 
 
 // 3.  Load generic pstreams
-("~/git/sphnxr/pstreams.scd").loadPaths;
-
+"pstreams.scd".loadRelative;
 
 // 4.  Generic testing (optional)
-("~/git/sphnxr/tests.scd").loadPaths;
-
+"tests.scd".loadRelative;
 
 (
 //5. AFTER all Peers have joined
